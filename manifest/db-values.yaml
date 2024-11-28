@@ -1,0 +1,23 @@
+primary:
+  persistence:
+    enabled: true
+    existingClaim: data-mysql-0
+    storageClass: standard
+    accessModes:
+      - ReadWriteOnce
+    size: 5Gi
+    mountPath: /bitnami/mysql
+  image:
+    debug: true
+
+secondary:
+  persistence:
+    enabled: false
+
+persistence:
+  enabled: true
+  size: 5Gi
+  storageClass: standard
+
+auth:
+  existingSecret: mysql-db-secret
