@@ -1,0 +1,11 @@
+apiVersion: image.toolkit.fluxcd.io/v1beta1
+kind: ImagePolicy
+metadata:
+  name: nodejs-express-app-policy
+  namespace: flux-system
+spec:
+  imageRepositoryRef:
+    name: nodejs-express-app  # Reference the ImageRepository created above
+  policy:
+    semver:
+      range: ">= 0.0.0"  # This will match any newer image version

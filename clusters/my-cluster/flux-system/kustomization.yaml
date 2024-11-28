@@ -1,5 +1,17 @@
-apiVersion: kustomize.config.k8s.io/v1beta1
+apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
-resources:
-- gotk-components.yaml
-- gotk-sync.yaml
+metadata:
+  name: nodejs-express-app
+  namespace: flux-system
+spec:
+  interval: 1m
+  path:  ./helmrelease  # Path to HelmRelease
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: nodejs-app-repository
+  healthChecks:
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: nodejs-app-nodejs-express-mysql
+
