@@ -1,0 +1,20 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: nodejs-express-app
+  namespace: flux-system
+spec:
+  interval: 1m
+  chart:
+    spec:
+      chart: ./helmchart/nodejs-express-mysql/  # Path to Helm chart
+      sourceRef:
+        kind: GitRepository
+        name: nodejs-app
+        namespace: flux-system
+  values:
+    # Any Helm values override
+    replicas: 1  # Example value
+  install:
+    timeout: 300s
+
