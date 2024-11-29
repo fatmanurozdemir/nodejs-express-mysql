@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: nodejs-express-mysql
-          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}  # Uses dynamic tag from ImagePolicy
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }} 
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: 8080
@@ -44,4 +44,3 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.mysql.secretName }}
                   key: {{ .Values.mysql.dbKey }}
-
