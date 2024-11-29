@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: nodejs-express-mysql
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}" 
+          image: "{{ .Values.image.repository }}" 
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: 8080
