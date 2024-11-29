@@ -10,7 +10,7 @@ spec:
       chart: ./manifest/nodejs-express-mysql  # Path to Helm chart
       sourceRef:
         kind: GitRepository
-        name: nodejs-app-repository
+        name: nodejs-app
         namespace: flux-system
   values:
     # Any Helm values override
