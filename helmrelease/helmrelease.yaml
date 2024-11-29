@@ -15,3 +15,6 @@ spec:
   values:
     # Any Helm values override
     replicas: 2  # Example value
+  install:
+    timeout: 300s
+
