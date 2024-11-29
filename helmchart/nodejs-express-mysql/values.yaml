@@ -2,9 +2,9 @@ replicaCount: 1
 
 image:
   repository: fatmanurdocker/nodejs-express-mysql
-  tag: "0.2"
+  tag: "{{image.tag}}"
   pullPolicy: Always
-
+  
 service:
   type: ClusterIP
   port: 8080
