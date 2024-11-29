@@ -2,7 +2,6 @@ replicaCount: 1
 
 image:
   repository: fatmanurdocker/nodejs-express-mysql
-  tag: "{{image.tag}}"
   pullPolicy: Always
   
 service:
