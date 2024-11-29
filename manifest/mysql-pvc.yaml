@@ -8,5 +8,5 @@ spec:
   resources:
     requests:
       storage: 5Gi
-  volumeName: mysql-pv  # This binds to the PV named mysql-pv
+  volumeName: mysql-db-pv  # This binds to the PV named mysql-pv
 
