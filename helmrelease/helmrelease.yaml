@@ -7,7 +7,7 @@ spec:
   interval: 1m
   chart:
     spec:
-      chart: ./manifest/nodejs-express-mysql  # Path to Helm chart
+      chart: ./helmchart/nodejs-express-mysql/  # Path to Helm chart
       sourceRef:
         kind: GitRepository
         name: nodejs-app
