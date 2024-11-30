@@ -1,51 +1,49 @@
 # **Continuous Integration (CI) Pipeline**
 
-### **1. Setting Up GitLab CI/CD**
+### **1. Setting Up GitLab CI**
 
-The CI/CD pipeline automates the process of building and pushing Docker images to Docker Hub every time a change is pushed to the GitHub repository.
+The CI pipeline automates the process of building and pushing Docker images to Docker Hub every time a change is pushed to the GitHub repository.
 
-#### **GitLab CI/CD Configuration**
+#### **Steps to Configure GitLab CI/CD Integration**
 
-The CI/CD pipeline is configured in `.gitlab-ci.yml`. Below is an overview of the steps:
+1. **Create a GitLab Repository**:
+   - Start by creating a new repository in GitLab. This will be used to host the CI/CD pipeline configuration.
 
-1. **Webhook Integration**:
-   - A GitHub webhook is set up to notify GitLab of new commits in the repository.
-   - This triggers the GitLab CI pipeline automatically whenever a commit is pushed.
+2. **Add the `.gitlab-ci.yml` File**:
+   - Create a `.gitlab-ci.yml` file in the GitLab repository. This file defines the stages and steps of the pipeline, such as building and pushing Docker images.
 
-2. **CI Pipeline Stages**:
-   - **Build**: Builds the Docker image for the application.
-   - **Push**: Pushes the built image to Docker Hub.
+3. **Set Environment Variables in GitLab**:
+   - Navigate to **Settings → CI/CD → Variables** in your GitLab project.
+   - Add the following variables securely:
+     - `DOCKER_USERNAME`: Your Docker Hub username.
+     - `DOCKER_PASSWORD`: Your Docker Hub password.
 
-#### **GitLab CI/CD Pipeline Definition**
+4. **Generate a Pipeline Trigger Token in GitLab**:
+   - Go to **Settings → CI/CD → Pipeline trigger tokens** in your GitLab project.
+   - Create a new trigger token. Copy this token for use in the webhook configuration.
 
-Here’s an example of the `.gitlab-ci.yml` file:
-```yaml
-stages:
-  - build
-  - push
+5. **Set Up a GitHub Webhook**:
+   - Go to your GitHub repository's **Settings → Webhooks**.
+   - Click **Add Webhook** and fill in the following details:
+     - **Payload URL**:  
+       ```
+       https://gitlab.com/api/v4/projects/<project-id>/ref/<gitlab-repo-branch>/trigger/pipeline?token=<gitlab-trigger-token>
+       ```
+       Replace `<project-id>` with the ID of your GitLab project, `<gitlab-repo-branch>` with the branch name in GitLab, and `<gitlab-trigger-token>` with the token created in the previous step.
+     - **Content Type**: Set this to `application/json`.
+     - **Events**: Select "Just the push event."
 
-variables:
-  DOCKER_IMAGE: your_dockerhub_username/nodejs-express-mysql-app
+6. **Verify Webhook Integration**:
+   - Push a change to your GitHub repository and ensure it triggers the GitLab CI pipeline.
 
-build:
-  stage: build
-  script:
-    - docker build -t $DOCKER_IMAGE:latest .
-  only:
-    - main
+---
 
-push:
-  stage: push
-  script:
-    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-    - docker push $DOCKER_IMAGE:latest
-  only:
-    - main
-```
+### **2. CI Pipeline Stages**
 
-Replace `your_dockerhub_username` with your actual Docker Hub username. Ensure that `DOCKER_USERNAME` and `DOCKER_PASSWORD` are securely stored in GitLab CI/CD variables.
+The `.gitlab-ci.yml` file defines the following stages:
 
-### **2. Docker Hub Integration**
+1. **Build**:
+   - This stage builds the Docker image for the application using the specified `Dockerfile`.
+2. **Push**:
+   - This stage pushes the built image to Docker Hub.
 
-- The Docker image is built using the CI/CD pipeline and pushed to Docker Hub.
-- The Kubernetes cluster pulls the latest image from Docker Hub during deployments.
