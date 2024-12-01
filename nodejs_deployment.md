@@ -59,24 +59,15 @@ helm create nodejs-express-mysql
 
 ```bash
 helm package nodejs-express-mysql/
-helm install nodejs-express-mysql ./nodejs-express-mysql
+helm install -n flux-system nodejs-express-mysql ./nodejs-express-mysql
 ```
 This command installs the application, connecting it to the MySQL database. Ensure that the Helm chart configuration files are correctly pointing to the database secrets and pulling the correct Docker image from Docker Hub.
 
 
-### **5. Verify Deployment**
+### **5. Delete Deployment**
 
-Check the status of your pods, services, and deployments to ensure everything is running correctly:
+Delete deployment, since it will be installed with "HelmRelease" later:
 ```bash
-kubectl get pods
-kubectl get svc
-kubectl get deployments
+helm uninstall -n flux-system nodejs-express-app
 ```
 
-### **6. Access the Application**
-
-You can expose your Node.js application using a Kubernetes service. If you're using a LoadBalancer or NodePort service type, use the following to get the external IP or port:
-
-```bash
-kubectl get svc nodejs-express-app
-```
