@@ -22,6 +22,7 @@ sudo chown 1001:1001 /mnt/data/mysql
 Create a **Persistent Volume Claim (PVC)** for MySQL in the `nodejs-express-mysql/manifest` directory:
 
 ```bash
+kubectl create ns flux-system
 kubectl create -f mysql-pvc.yaml
 ```
 
@@ -57,5 +58,5 @@ echo -n 'your_password' | base64
 Now, deploy the MySQL Helm chart with the custom values specified in the `mysql-db-secret.yaml`:
 
 ```bash
-helm install mysql bitnami/mysql -f nodejs-express-mysql/manifest/db-values.yaml
+helm install mysql bitnami/mysql -n flux-system -f nodejs-express-mysql/manifest/db-values.yaml
 ```
