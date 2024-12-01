@@ -2,27 +2,44 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "nodejs-express-mysql.fullname" . }}
-  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "nodejs-express-mysql.labels" . | nindent 4 }}
 spec:
+  {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
+  {{- end }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "nodejs-express-mysql.name" . }}
-      app.kubernetes.io/instance: {{ .Release.Name }}
+      {{- include "nodejs-express-mysql.selectorLabels" . | nindent 6 }}
   template:
     metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       labels:
-        app.kubernetes.io/name: {{ include "nodejs-express-mysql.name" . }}
-        app.kubernetes.io/instance: {{ .Release.Name }}
+        {{- include "nodejs-express-mysql.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
     spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "nodejs-express-mysql.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-        - name: nodejs-express-mysql
-          image:  "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - containerPort: 8080
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
           env:
             - name: DB_HOST
               valueFrom:
@@ -44,3 +61,29 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.mysql.secretName }}
                   key: {{ .Values.mysql.dbKey }}
+          livenessProbe:
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          {{- with .Values.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      {{- with .Values.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
