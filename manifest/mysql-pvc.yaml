@@ -2,6 +2,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: data-mysql-0
+  namespace: flux-system
 spec:
   accessModes:
     - ReadWriteOnce
